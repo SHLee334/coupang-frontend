@@ -40,23 +40,13 @@ const CategoryItem = ({ category }) => {
       <FaCaretRight />
       <div className="category-sub-item">
         <ul>
-          <li>
-            <a href="#">여성패션</a>
-          </li>
-          <li>
-            <a href="#">남성패션</a>
-          </li>
-          <li>
-            <a href="#">남녀 공용 의류</a>
-          </li>
-          <li>
-            <a href="#">유아동패션</a>
-          </li>
+          {category.subCategories.map((sub) => (
+            <li key={sub.cateCode}>
+              <a href="#">{sub.cateName}</a>
+            </li>
+          ))}
         </ul>
-        <img
-          src="https://image8.coupangcdn.com/image/displayitem/displayitem_3cc22bda-73a2-4f9b-a7ea-c12d205adcb3.jpg"
-          alt=""
-        />
+        <img src={category.cateUrl} />
       </div>
     </div>
   );
