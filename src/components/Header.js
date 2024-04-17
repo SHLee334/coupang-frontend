@@ -11,19 +11,37 @@ import {
 import CategoryItem from "./CategoryItem";
 import { getCategories } from "../api/product";
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userSave, userLogout } from "../store/user";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
   const [active, setActive] = useState(false);
 
+  const user = useSelector((state) => {
+    return state.user;
+  });
+
   const categoriesAPI = async () => {
     const response = await getCategories();
-    console.log(response);
     setCategories(response.data);
   };
   useEffect(() => {
     categoriesAPI();
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      dispatch(userSave(JSON.parse(localStorage.getItem("user"))));
+    }
   }, []);
+
+  const logout = (e) => {
+    e.preventDefault(); // 원래 기능을 막는다, 여기서는 a 태그의 리다이렉트 기능을 막음
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    dispatch(userLogout());
+  };
+
   return (
     <>
       <div className="tob-bar container">
@@ -32,8 +50,17 @@ const Header = () => {
           <a href="#">입점신청</a>
         </div>
         <div className="tob-bar-right">
-          <a href="#">로그인</a>
-          <a href="#">회원가입</a>
+          {Object.keys(user).length !== 0 ? (
+            <a href="" onClick={logout}>
+              로그아웃
+            </a>
+          ) : (
+            <>
+              <a href="/login">로그인</a>
+              <a href="#">회원가입</a>
+            </>
+          )}
+
           <a href="#">고객센터</a>
         </div>
       </div>
